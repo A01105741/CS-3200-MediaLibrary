@@ -1,5 +1,6 @@
 package com.example.medialibary.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,18 +21,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.medialibary.MediaLibraryApplication
 import com.example.medialibary.viewmodels.CreateMovieScreenViewModel
-import com.example.medialibary.viewmodels.CreateVideoGameScreenViewModel
-import com.example.medialibary.viewmodels.MoviesScreenViewModel
+//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
+
+
+@Composable
+fun createMovieScreenViewModel(movieId: Long?) = viewModel<CreateMovieScreenViewModel>(
+    factory = CreateMovieScreenViewModel.Factory,
+    extras = MutableCreationExtras().apply {
+        this[CreateMovieScreenViewModel.MOVIE_ID_KEY] = movieId
+        this[APPLICATION_KEY] = LocalContext.current.applicationContext as MediaLibraryApplication
+    }
+)
 
 @Composable
 fun CreateMovieScreen(
     goBack: () -> Unit,
     viewModel: CreateMovieScreenViewModel = viewModel(factory = CreateMovieScreenViewModel.Factory)
 ) {
+    val context = LocalContext.current
+    //val coroutineScope = rememberCoroutineScope()
 
     var title by remember { mutableStateOf("") }
     var genre by remember { mutableStateOf("") }
@@ -39,6 +55,7 @@ fun CreateMovieScreen(
     var runtime by remember { mutableStateOf("") }
     var format by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
 
     Surface(
         shadowElevation = 4.dp,
@@ -50,7 +67,8 @@ fun CreateMovieScreen(
             Text("Create Movie", style = MaterialTheme.typography.headlineSmall)
             TextField(
                 value=title,
-                onValueChange = { title = it },
+                onValueChange = {
+                    title = it },
                 label = { Text("Title") },
             )
             TextField(
@@ -64,8 +82,13 @@ fun CreateMovieScreen(
                 label = { Text("Rating") },
             )
             TextField(
-                value=runtime,
-                onValueChange = { runtime = it },
+                //value = 0 if null
+                value = runtime,//runtime.toIntOrNull() ?: 0,
+                //value=runtime
+                //onValueChange = { runtime = it },
+                onValueChange = {
+                    runtime = it
+                },
                 label = { Text("Runtime") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
@@ -90,21 +113,20 @@ fun CreateMovieScreen(
                     Text("Cancel")
                 }
                 Button(onClick = {
-                    viewModel.saveMovie(
-                        title = title,
-                        genre = genre,
-                        rating = rating,
-                        runtime = runtime.toInt(),
-                        format = format,
-                        notes = notes
-                    )
-                    goBack()
+                    // Input validation
+                    if (title.isBlank()) {
+                        Toast.makeText(context, "Title cannot be empty - please fix the error", Toast.LENGTH_SHORT).show()
+                    } else if (runtime.isNotBlank() && runtime.toIntOrNull() == null) {
+                        Toast.makeText(context, "Runtime has to be a number", Toast.LENGTH_SHORT).show()
+                    } else {
+                        viewModel.saveMovie(title, genre, rating, runtime.toInt(), format, notes)
+                        Toast.makeText(context, "Movie added", Toast.LENGTH_SHORT).show()
+                        goBack()
+                    }
                 }) {
                     Text("Save")
                 }
             }
-
-
         }
     }
 }

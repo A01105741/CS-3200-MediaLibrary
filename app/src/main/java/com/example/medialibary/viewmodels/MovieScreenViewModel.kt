@@ -13,32 +13,56 @@ import com.example.medialibary.repositories.MoviesRepository
 import com.example.medialibary.repositories.VideoGamesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MovieScreenViewModel(
-    moviesRepository: MoviesRepository,
-    movieId: Long
-): ViewModel() {
-    private val _movie = MutableStateFlow<Movie?>(null)
-    val movie: StateFlow<Movie?> = _movie
+data class MovieScreenUIState(
+    val movie: Movie? = null
+)
 
-    init {
+class MovieScreenViewModel(
+    private val movieId: Long?,
+    private val moviesRepository: MoviesRepository
+): ViewModel() {
+ //   private val _movie = MutableStateFlow<Movie?>(null)
+    private val _uiMovieState  = MutableStateFlow(MovieScreenUIState())
+    //val movie: StateFlow<Movie?> = _movie
+    val uiMovieState: StateFlow<MovieScreenUIState> = _uiMovieState.asStateFlow()
+    //movie: StateFlow<MovieScreenUIState> = _movie.asStateFlow() //_uiState.asStateFlow()
+
+
+    fun getMovieById(movieId: Long) {
         viewModelScope.launch {
-            moviesRepository.movies.collect { movies ->
-                _movie.value = movies.find { it.id == movieId }
-            }
+            val movie = moviesRepository.getMovieById(movieId)
+            _uiMovieState.update { it.copy(movie = movie) }
         }
     }
 
+    /*
+    init {
+        viewModelScope.launch {
+            // moviesRepository.movies.collect { movies ->
+             //   _movie.value = movies.find { it.id == movieId }
+            val movie = moviesRepository.getMovieById(movieId)
+            _uiMovieState.update { it.copy(movie = movie) }
+            }
+        }
+   // }
+
+
+*/
+
     companion object {
+
         val MOVIE_ID_KEY = object: CreationExtras.Key<Long> {}
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as MediaLibraryApplication
-                val movieId = this[MOVIE_ID_KEY] as Long
+                val movieId = this[MOVIE_ID_KEY] //as Long
                 MovieScreenViewModel(
-                    application.moviesRepository,
-                    movieId
+                    movieId,
+                    moviesRepository = application.moviesRepository // application.moviesRepository
                 )
             }
         }

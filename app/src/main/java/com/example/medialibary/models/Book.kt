@@ -1,10 +1,15 @@
 package com.example.medialibary.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Book(
-    val id: Long,
-    val title: String,
-    val author: String,
-    val format: String,
-    val pages: Int,
-    val notes: String
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    @ColumnInfo val title: String,
+    @ColumnInfo val author: String,
+    @ColumnInfo val format: String,
+    @ColumnInfo val pages: Int,
+    @ColumnInfo val notes: String
 )

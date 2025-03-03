@@ -30,7 +30,7 @@ import com.example.medialibary.viewmodels.VideoGamesScreenViewModel
 
 @Composable
 fun VideoGamesScreen(
-    onVideoGameClick: (id: Long) -> Unit,
+    onVideoGameClick: (id: Long?) -> Unit,
     onAddVideoGameClick: () -> Unit,
     viewModel: VideoGamesScreenViewModel = viewModel(factory = VideoGamesScreenViewModel.Factory)
 ) {

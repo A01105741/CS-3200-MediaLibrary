@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,10 +26,16 @@ import com.example.medialibary.viewmodels.BooksScreenViewModel
 
 @Composable
 fun BooksScreen(
-    onBookClick: (id: Long) -> Unit,
+    onBookClick: (id: Long?) -> Unit,
     onAddBookClick: () -> Unit,
     viewModel: BooksScreenViewModel = viewModel(factory = BooksScreenViewModel.Factory)
 ) {
+    //val movies by viewModel.books.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBooks()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,8 +59,10 @@ fun BooksScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        TextButton(onClick = onAddBookClick) {
-            Text("+ Add Book")
+        Button(
+            onClick = onAddBookClick
+        ) {
+            Text("Add Movie")
         }
     }
 }

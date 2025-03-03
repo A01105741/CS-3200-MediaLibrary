@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.medialibary.MediaLibraryApplication
+import com.example.medialibary.models.VideoGame
 import com.example.medialibary.repositories.VideoGamesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ class CreateVideoGameScreenViewModel(
         notes: String
     ) {
         viewModelScope.launch {
-            videoGamesRepository.addVideoGame(
+            val videoGame = VideoGame(
                 title = title,
                 developer = developer,
                 genre = genre,
@@ -32,6 +33,8 @@ class CreateVideoGameScreenViewModel(
                 platform = platform,
                 notes = notes
             )
+            videoGame.id = videoGamesRepository.addVideoGame(videoGame)
+            var videoGames = videoGame
         }
     }
 

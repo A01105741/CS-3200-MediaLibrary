@@ -24,7 +24,7 @@ import com.example.medialibary.viewmodels.BoardGamesScreenViewModel
 
 @Composable
 fun BoardGamesScreen(
-    onBoardGameClick: (id: Long) -> Unit,
+    onBoardGameClick: (id: Long?) -> Unit,
     onAddBoardGameClick: () -> Unit,
     viewModel: BoardGamesScreenViewModel = viewModel(factory = BoardGamesScreenViewModel.Factory)
 ) {

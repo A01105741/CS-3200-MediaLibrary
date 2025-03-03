@@ -20,6 +20,12 @@ class BooksScreenViewModel(
     private val _books = MutableStateFlow<List<Book>>(emptyList())
     val books: StateFlow<List<Book>> = _books
 
+    fun loadBooks() {
+        viewModelScope.launch {
+            booksRepository.loadbooks()
+        }
+    }
+
     init {
         viewModelScope.launch {
             booksRepository.books.collect { books ->

@@ -1,24 +1,31 @@
 package com.example.medialibary.repositories
 
+import com.example.medialibary.daos.MoviesDao
 import com.example.medialibary.models.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-object MoviesRepository {
-    private var ID_COUNTER = 0L
-    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
+class MoviesRepository (
+    private val moviesDao: MoviesDao
+){
+    private val _movies = MutableStateFlow(emptyList<Movie>())
     val movies: StateFlow<List<Movie>> = _movies
 
-    suspend fun addMovie(
-        title: String,
-        genre: String,
-        rating: String,
-        runtime: Int,
-        format: String,
-        notes: String
-    ) {
-        _movies.value += Movie(
-            id = ID_COUNTER++,
+
+    suspend fun loadMovies() {
+        _movies.value = moviesDao.getAllMovies()
+    }
+
+    suspend fun getMovieById(id: Long?): Movie? = moviesDao.getMovieById(id)
+
+    suspend fun addMovie(title: String,
+                         genre: String,
+                         rating: String,
+                         runtime: Int,
+                         format: String,
+                         notes: String
+                         ){
+        val newMovie = Movie(
             title = title,
             genre = genre,
             rating = rating,
@@ -26,5 +33,7 @@ object MoviesRepository {
             format = format,
             notes = notes
         )
+        newMovie.id = moviesDao.insertMovie(newMovie)
+        _movies.value += newMovie
+        }
     }
-}

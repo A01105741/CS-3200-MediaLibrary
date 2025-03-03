@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.medialibary.MediaLibraryApplication
+import com.example.medialibary.models.BoardGame
 import com.example.medialibary.repositories.BoardGamesRepository
 import kotlinx.coroutines.launch
 
@@ -20,13 +21,16 @@ class CreateBoardGameScreenViewModel(
         notes: String
     ) {
         viewModelScope.launch {
-            boardGamesRepository.addBoardGame(
+          val boardGame = BoardGame(
                 title = title,
                 minPlayers = minPlayers,
                 maxPlayers = maxPlayers,
                 type = type,
                 notes = notes
             )
+            boardGame.id = boardGamesRepository.addBoardGame(boardGame)
+            var boardGames = boardGame
+            // content = ""
         }
     }
 

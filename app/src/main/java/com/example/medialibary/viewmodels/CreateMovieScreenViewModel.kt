@@ -3,16 +3,33 @@ package com.example.medialibary.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.medialibary.MediaLibraryApplication
+import com.example.medialibary.models.Movie
 import com.example.medialibary.repositories.MoviesRepository
 import com.example.medialibary.repositories.VideoGamesRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
 class CreateMovieScreenViewModel(
-    val moviesRepository: MoviesRepository,
+//    private val movieId: Long?,
+    private val moviesRepository: MoviesRepository
 ): ViewModel() {
+    //private val _title = MutableStateFlow("")
+    //private val _genre = MutableStateFlow("")
+    //private val _rating = MutableStateFlow("")
+    //private val _runtime = MutableStateFlow(0)  // M4 L4.2
+    //private val _format = MutableStateFlow("")
+    //private val _notes = MutableStateFlow("")
+
+    //val title: MutableStateFlow<String> = _title
+    private val _movies = MutableStateFlow(emptyList<Movie>()) // Copilot
+    val movies: StateFlow<List<Movie>> = _movies
+
     fun saveMovie(
         title: String,
         genre: String,
@@ -22,21 +39,29 @@ class CreateMovieScreenViewModel(
         notes: String
     ) {
         viewModelScope.launch {
-            moviesRepository.addMovie(
+            val newMovie = Movie(
                 title = title,
                 genre = genre,
                 rating = rating,
                 runtime = runtime,
                 format = format,
-                notes = notes
-            )
+                notes = notes)
+            moviesRepository.addMovie(newMovie.title,
+                newMovie.genre,
+                newMovie.rating,
+                newMovie.runtime,
+                newMovie.format,
+                newMovie.notes)
         }
     }
 
     companion object {
+        val MOVIE_ID_KEY = object : CreationExtras.Key<Long?> {}
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as MediaLibraryApplication
+                val movieId = this[MOVIE_ID_KEY] //as Long?
+
                 CreateMovieScreenViewModel(
                     moviesRepository = application.moviesRepository
                 )
