@@ -120,9 +120,7 @@ class MainActivity : ComponentActivity() {
                         composable<Destinations.Movies> {
                             MoviesScreen(
                                 onMovieClick = { id ->
-                                    navController.navigate(
-                                        Destinations.Movie(id?: 0)
-                                    )
+                                    navController.navigate(Destinations.Movie(id?: 0))
                                 },
                                 onAddMovieClick = { navController.navigate(Destinations.CreateMovie) }
                             )

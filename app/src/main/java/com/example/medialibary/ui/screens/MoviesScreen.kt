@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -42,11 +43,13 @@ fun MoviesScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         //val movies by viewModel.movies.collectAsState()
+//        val movies by viewModel.movies.collectAsState(initial = emptyList())
         val movies by viewModel.movies.collectAsState(initial = emptyList())
 
         Text("Movies", style = MaterialTheme.typography.headlineMedium)
         LazyVerticalGrid(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
+                            .heightIn(max = 400.dp),
             columns = GridCells.Adaptive(minSize = 120.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),

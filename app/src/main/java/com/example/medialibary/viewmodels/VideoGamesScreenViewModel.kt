@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class VideoGamesScreenViewModel(
-    private val videoGamesRepository: VideoGamesRepository
+    val videoGamesRepository: VideoGamesRepository
 ): ViewModel() {
     private val _videoGames = MutableStateFlow<List<VideoGame>>(emptyList())
     val videoGames: StateFlow<List<VideoGame>> = _videoGames
