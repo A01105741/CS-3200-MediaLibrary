@@ -9,36 +9,42 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.medialibary.MediaLibraryApplication
 import com.example.medialibary.models.BoardGame
 import com.example.medialibary.models.Book
+import com.example.medialibary.models.Movie
 import com.example.medialibary.repositories.BoardGamesRepository
 import com.example.medialibary.repositories.BooksRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class BoardGameScreenViewModel(
-    boardGamesRepository: BoardGamesRepository,
-    boardGameId: Long
-): ViewModel() {
-    private val _boardGame = MutableStateFlow<BoardGame?>(null)
-    val boardGame: StateFlow<BoardGame?> = _boardGame
+data class BoardGameScreenUIState(
+    val boardGame: BoardGame? = null
+)
 
-    init {
+class BoardGameScreenViewModel(
+    private val boardGameId: Long?,
+    private val boardGamesRepository: BoardGamesRepository
+): ViewModel() {
+    private val _uiBoardGameState = MutableStateFlow(BoardGameScreenUIState())
+    val uiBoardGame: StateFlow<BoardGameScreenUIState> = _uiBoardGameState.asStateFlow()
+
+    fun getBoardGameById(boardGameId: Long) {
         viewModelScope.launch {
-            boardGamesRepository.boardGames.collect { boardGames ->
-                _boardGame.value = boardGames.find { it.id == boardGameId }
-            }
+            val boardGame = boardGamesRepository.getBoardGameById(boardGameId)
+            _uiBoardGameState.update { it.copy(boardGame = boardGame) }
         }
     }
 
     companion object {
-        val BOARD_GAME_ID_KEY = object: CreationExtras.Key<Long> {}
+        val BOARDGAME_ID_KEY = object: CreationExtras.Key<Long> {}
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as MediaLibraryApplication
-                val boardGameId = this[BOARD_GAME_ID_KEY] as Long
+                val boardGameId = this[BOARDGAME_ID_KEY] //as Long
                 BoardGameScreenViewModel(
-                    application.boardGamesRepository,
-                    boardGameId
+                    boardGameId,
+                    application.boardGamesRepository
                 )
             }
         }

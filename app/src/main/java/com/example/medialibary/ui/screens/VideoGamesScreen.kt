@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,13 +35,18 @@ fun VideoGamesScreen(
     onAddVideoGameClick: () -> Unit,
     viewModel: VideoGamesScreenViewModel = viewModel(factory = VideoGamesScreenViewModel.Factory)
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.loadVideoGames()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        val videoGames by viewModel.videoGames.collectAsState()
+        val videoGames by viewModel.videoGames.collectAsState(initial = emptyList())
 
         Text("Video Games", style = MaterialTheme.typography.headlineMedium)
         LazyVerticalGrid(
@@ -57,8 +63,10 @@ fun VideoGamesScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        TextButton(onClick = onAddVideoGameClick) {
-            Text("+ Add Video Game")
+        Button(
+            onClick = onAddVideoGameClick
+        ) {
+            Text("Add Video Game")
         }
     }
 }

@@ -20,6 +20,12 @@ class BoardGamesScreenViewModel(
     private val _boardGames = MutableStateFlow<List<BoardGame>>(emptyList())
     val boardGames: StateFlow<List<BoardGame>> = _boardGames
 
+    fun loadBoardGames() {
+        viewModelScope.launch {
+            boardGamesRepository.loadBoardGames()
+        }
+    }
+
     init {
         viewModelScope.launch {
             boardGamesRepository.boardGames.collect { boardGames ->
@@ -33,7 +39,7 @@ class BoardGamesScreenViewModel(
             initializer {
                 val application = this[APPLICATION_KEY] as MediaLibraryApplication
                 BoardGamesScreenViewModel(
-                    boardGamesRepository = application.boardGamesRepository
+                    application.boardGamesRepository
                 )
             }
         }

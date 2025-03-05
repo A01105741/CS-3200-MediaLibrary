@@ -29,7 +29,6 @@ import com.example.medialibary.viewmodels.MovieScreenViewModel
 fun movieScreenViewModel(movieId: Long?) = viewModel<MovieScreenViewModel>(
     factory = MovieScreenViewModel.Factory,
     extras = MutableCreationExtras().apply {
-        //this[MovieScreenViewModel.MOVIE_ID_KEY] = movieId
         this[MovieScreenViewModel.MOVIE_ID_KEY] = movieId ?: 0L
         this[APPLICATION_KEY] = LocalContext.current.applicationContext as MediaLibraryApplication
     }
@@ -41,18 +40,11 @@ fun MovieScreen(
     id: Long,
     viewModel: MovieScreenViewModel = viewModel(factory = MovieScreenViewModel.Factory)
 ) {
-    /*
-    LaunchedEffect(Unit) {
-        viewModel.getMovieById(id)
-    }
-*/
-    val uiState by viewModel.uiMovieState.collectAsState()
+    val uiMovieState by viewModel.uiMovieState.collectAsState()
     viewModel.getMovieById(id)
 
-
-    //var movie by viewModel.movie.collectAsState()
     Column(modifier = Modifier.padding(16.dp)) {
-        uiState.movie?.let { movie ->
+        uiMovieState.movie?.let { movie ->
             Text("${movie?.title}", style = MaterialTheme.typography.headlineLarge)
             HorizontalDivider()
             Spacer(modifier = Modifier.padding(8.dp))
@@ -81,11 +73,6 @@ fun MovieScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-  /*              TextButton(
-                    onClick = goBack,
-                ) {
-                    Text("Back")
-                }*/
                 Button(onClick = {
                     goBack()
                 }) {

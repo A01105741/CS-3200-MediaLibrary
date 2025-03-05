@@ -1,9 +1,13 @@
 package com.example.medialibary.ui.screens
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,39 +30,55 @@ import com.example.medialibary.viewmodels.VideoGamesScreenViewModel
 fun createVideoGameScreenViewModel(videoGameId: Long) = viewModel<VideoGameScreenViewModel>(
     factory = VideoGameScreenViewModel.Factory,
     extras = MutableCreationExtras().apply {
-        this[VideoGameScreenViewModel.VIDEO_GAME_ID_KEY] = videoGameId
+        this[VideoGameScreenViewModel.VIDEOGAME_ID_KEY] = videoGameId
         this[APPLICATION_KEY] = LocalContext.current.applicationContext as MediaLibraryApplication
     }
 )
 
 @Composable
 fun VideoGameScreen(
+    goBack: () -> Unit,
     id: Long,
     viewModel: VideoGameScreenViewModel = createVideoGameScreenViewModel(id)
 ) {
-    val videoGame by viewModel.videoGame.collectAsState()
+    val uiVideoGameState by viewModel.uiVideoGame.collectAsState()
+    viewModel.getVideoGameById(id)
+
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("${videoGame?.title}", style = MaterialTheme.typography.headlineLarge)
-        HorizontalDivider()
-        Spacer(modifier = Modifier.padding(8.dp))
-        if (videoGame == null) {
-            Text("Loading...")
-        } else {
+        uiVideoGameState.videoGame?.let { videoGame ->
+            Text("${videoGame?.title}", style = MaterialTheme.typography.headlineLarge)
+            HorizontalDivider()
             Spacer(modifier = Modifier.padding(8.dp))
-            Text("Platform", style = MaterialTheme.typography.headlineSmall)
-            Text("${videoGame?.platform}")
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text("Rating", style = MaterialTheme.typography.headlineSmall)
-            Text("${videoGame?.rating}")
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text("Developer", style = MaterialTheme.typography.headlineSmall)
-            Text("${videoGame?.developer}")
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text("Genre", style = MaterialTheme.typography.headlineSmall)
-            Text("${videoGame?.genre}")
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text("Notes", style = MaterialTheme.typography.headlineSmall)
-            Text("${videoGame?.notes}")
+            if (videoGame == null) {
+                Text("Loading...")
+            } else {
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text("Platform", style = MaterialTheme.typography.headlineSmall)
+                Text("${videoGame?.platform}")
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text("Rating", style = MaterialTheme.typography.headlineSmall)
+                Text("${videoGame?.rating}")
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text("Developer", style = MaterialTheme.typography.headlineSmall)
+                Text("${videoGame?.developer}")
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text("Genre", style = MaterialTheme.typography.headlineSmall)
+                Text("${videoGame?.genre}")
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text("Notes", style = MaterialTheme.typography.headlineSmall)
+                Text("${videoGame?.notes}")
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(onClick = {
+                    goBack()
+                }) {
+                    Text("Back")
+                }
+            }
         }
     }
 }

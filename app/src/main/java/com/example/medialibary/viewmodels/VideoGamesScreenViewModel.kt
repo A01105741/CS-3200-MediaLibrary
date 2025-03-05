@@ -18,6 +18,12 @@ class VideoGamesScreenViewModel(
     private val _videoGames = MutableStateFlow<List<VideoGame>>(emptyList())
     val videoGames: StateFlow<List<VideoGame>> = _videoGames
 
+    fun loadVideoGames() {
+        viewModelScope.launch {
+            videoGamesRepository.loadVideoGames()
+        }
+    }
+
     init {
         viewModelScope.launch {
             videoGamesRepository.videoGames.collect { videoGames ->
@@ -31,7 +37,7 @@ class VideoGamesScreenViewModel(
             initializer {
                 val application = this[APPLICATION_KEY] as MediaLibraryApplication
                 VideoGamesScreenViewModel(
-                    videoGamesRepository = application.videoGamesRepository
+                    application.videoGamesRepository
                 )
             }
         }

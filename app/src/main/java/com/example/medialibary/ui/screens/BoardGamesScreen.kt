@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,13 +30,19 @@ fun BoardGamesScreen(
     onAddBoardGameClick: () -> Unit,
     viewModel: BoardGamesScreenViewModel = viewModel(factory = BoardGamesScreenViewModel.Factory)
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBoardGames()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        val boardGames by viewModel.boardGames.collectAsState()
+        // val boardGames by viewModel.boardGames.collectAsState()
+        val boardGames by viewModel.boardGames.collectAsState(initial = emptyList())
 
         Text("Board Games", style = MaterialTheme.typography.headlineMedium)
         LazyVerticalGrid(
@@ -51,8 +59,10 @@ fun BoardGamesScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        TextButton(onClick = onAddBoardGameClick) {
-            Text("+ Add Board Game")
+        Button(
+            onClick = onAddBoardGameClick
+        ) {
+            Text("Add Board Game")
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.medialibary.ui.screens
 
+import android.widget.Toast
 import android.window.BackEvent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,6 +35,8 @@ fun CreateVideoGameScreen(
     goBack: () -> Unit,
     viewModel: CreateVideoGameScreenViewModel = viewModel(factory = CreateVideoGameScreenViewModel.Factory)
 ) {
+    val context = LocalContext.current
+
     var title by remember { mutableStateOf("") }
     var platform by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf("") }
@@ -89,15 +93,24 @@ fun CreateVideoGameScreen(
                     Text("Cancel")
                 }
                 Button(onClick = {
-                    viewModel.saveVideoGame(
-                        title = title,
-                        platform = platform,
-                        rating = rating,
-                        developer = developer,
-                        genre = genre,
-                        notes = notes
-                    )
-                    goBack()
+                    if (title.isBlank()) {
+                        Toast.makeText(
+                            context,
+                            "Title cannot be empty - please fix the error",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        viewModel.saveVideoGame(
+                            title = title,
+                            platform = platform,
+                            rating = rating,
+                            developer = developer,
+                            genre = genre,
+                            notes = notes
+                        )
+                        Toast.makeText(context, "Video Game added", Toast.LENGTH_SHORT).show()
+                        goBack()
+                    }
                 }) {
                     Text("Save")
                 }

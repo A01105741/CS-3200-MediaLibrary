@@ -27,50 +27,43 @@ data class HomeScreenUIState(
 )
 
 class HomeScreenViewModel(
-    booksRepository: BooksRepository,
-    moviesRepository: MoviesRepository,
-    videoGamesRepository: VideoGamesRepository,
-    boardGameRepository: BoardGamesRepository,
+    private val booksRepository: BooksRepository,
+    private val moviesRepository: MoviesRepository,
+    private val videoGamesRepository: VideoGamesRepository,
+    private val boardGamesRepository: BoardGamesRepository,
 ): ViewModel() {
-    /*
-    val _uiState = MutableStateFlow<HomeScreenUIState>(
-        HomeScreenUIState()
-    )
-    */
+    fun loadData() {
+        viewModelScope.launch {
+            moviesRepository.loadMovies()
+            booksRepository.loadBooks()
+            boardGamesRepository.loadBoardGames()
+            videoGamesRepository.loadVideoGames()
+        }
+    }
 
     private val _uiState = MutableStateFlow(HomeScreenUIState())
-    //val uiState:StateFlow<HomeScreenUIState> = _uiState
     val uiState: StateFlow<HomeScreenUIState> = _uiState.asStateFlow()
-    //val movies by viewModel.movies.collectAsState()
 
     init {
         viewModelScope.launch {
             launch {
                 booksRepository.books.collect() { books ->
                     _uiState.update { it.copy(bookCount = books.size) }
-                    //_uiState.value = _uiState.value.copy(bookCount = it.size)
-                    // _uiState.update { it.copy(bookCount = it.size) }
                 }
             }
             launch {
                 moviesRepository.movies.collect() { movies ->
                     _uiState.update { it.copy(movieCount = movies.size) }
-                    //  _uiState.value = _uiState.value.copy(movieCount = it.size)
-                  //  _uiState.update { it.copy(movieCount = it.size) }
                 }
             }
             launch {
                 videoGamesRepository.videoGames.collect() { videoGames ->
                     _uiState.update { it.copy(videoGameCount = videoGames.size) }
-                   // _uiState.value = _uiState.value.copy(videoGameCount = it.size)
-                   // _uiState.update { it.copy(videoGameCount = it.size) }
                 }
             }
             launch {
-                boardGameRepository.boardGames.collect() { boardGames ->
+                boardGamesRepository.boardGames.collect() { boardGames ->
                     _uiState.update { it.copy(boardGameCount = boardGames.size) }
-                    // _uiState.value = _uiState.value.copy(boardGameCount = it.size)
-                    // _uiState.update { it.copy(boardGameCount = it.size) }
 
                 }
             }

@@ -31,8 +31,6 @@ fun MoviesScreen(
     viewModel: MoviesScreenViewModel = viewModel(factory = MoviesScreenViewModel.Factory)
 ) {
 
-    //val movies by viewModel.movies.collectAsState()
-
     LaunchedEffect(Unit) {
         viewModel.loadMovies()
     }
@@ -43,7 +41,8 @@ fun MoviesScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        val movies by viewModel.movies.collectAsState()
+        //val movies by viewModel.movies.collectAsState()
+        val movies by viewModel.movies.collectAsState(initial = emptyList())
 
         Text("Movies", style = MaterialTheme.typography.headlineMedium)
         LazyVerticalGrid(
@@ -60,10 +59,6 @@ fun MoviesScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        /*
-        TextButton(onClick = onAddMovieClick) {
-            Text("+ Add Movie")
-        }*/
         Button(
             onClick = onAddMovieClick
         ) {

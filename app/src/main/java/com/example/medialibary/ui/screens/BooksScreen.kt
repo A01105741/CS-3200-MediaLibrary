@@ -30,7 +30,6 @@ fun BooksScreen(
     onAddBookClick: () -> Unit,
     viewModel: BooksScreenViewModel = viewModel(factory = BooksScreenViewModel.Factory)
 ) {
-    //val movies by viewModel.books.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadBooks()
@@ -62,7 +61,7 @@ fun BooksScreen(
         Button(
             onClick = onAddBookClick
         ) {
-            Text("Add Movie")
+            Text("Add Book")
         }
     }
 }

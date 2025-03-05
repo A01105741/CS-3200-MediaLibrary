@@ -39,22 +39,7 @@ class MovieScreenViewModel(
         }
     }
 
-    /*
-    init {
-        viewModelScope.launch {
-            // moviesRepository.movies.collect { movies ->
-             //   _movie.value = movies.find { it.id == movieId }
-            val movie = moviesRepository.getMovieById(movieId)
-            _uiMovieState.update { it.copy(movie = movie) }
-            }
-        }
-   // }
-
-
-*/
-
     companion object {
-
         val MOVIE_ID_KEY = object: CreationExtras.Key<Long> {}
         val Factory = viewModelFactory {
             initializer {

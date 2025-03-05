@@ -11,7 +11,7 @@ class BooksRepository (
     private val _books = MutableStateFlow(emptyList<Book>())
     val books: StateFlow<List<Book>> = _books
 
-    suspend fun loadbooks() {
+    suspend fun loadBooks() {
         _books.value = booksDao.getAllBooks()
     }
     suspend fun getBookById(id: Long?): Book? = booksDao.getBookById(id)

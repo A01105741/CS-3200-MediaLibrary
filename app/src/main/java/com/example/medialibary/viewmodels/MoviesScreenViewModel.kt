@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class MoviesScreenViewModel(
     private val moviesRepository: MoviesRepository
 ): ViewModel() {
-    private val _movies = MutableStateFlow(emptyList<Movie>())
+    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies: StateFlow<List<Movie>> = _movies
 
     fun loadMovies() {
@@ -28,8 +28,8 @@ class MoviesScreenViewModel(
 
     init {
         viewModelScope.launch {
-            moviesRepository.movies.collect {
-                 _movies.value = it
+            moviesRepository.movies.collect {movies ->
+                _movies.value = movies
             }
         }
     }

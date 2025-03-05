@@ -22,11 +22,11 @@ fun HomeScreen(
     onBooksClick: () -> Unit,
     viewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory)
 ) {
-    /*
+
     LaunchedEffect(Unit) {
-        viewModel.loadMovies()
+        viewModel.loadData()
     }
-    */
+
     val uiState by viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth().padding(16.dp)

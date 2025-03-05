@@ -111,7 +111,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<Destinations.VideoGames> {
                             VideoGamesScreen(
-                                onVideoGameClick = { it?: navController.navigate(Destinations.VideoGame(id = 0))
+                                onVideoGameClick = { id ->
+                                    navController.navigate(Destinations.VideoGame(id?: 0))
                                 },
                                 onAddVideoGameClick = { navController.navigate(Destinations.CreateVideoGame) }
                             )
@@ -128,7 +129,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<Destinations.BoardGames> {
                             BoardGamesScreen(
-                                onBoardGameClick = { it?: navController.navigate(Destinations.BoardGame(id = 0))
+                                onBoardGameClick = { id ->
+                                    navController.navigate(Destinations.BoardGame(id?: 0))
                                 },
                                 onAddBoardGameClick = { navController.navigate(Destinations.CreateBoardGame) }
                             )
@@ -166,6 +168,7 @@ class MainActivity : ComponentActivity() {
                         composable<Destinations.VideoGame> {
                             val route = it.toRoute<Destinations.VideoGame>()
                             VideoGameScreen(
+                                goBack = { navController.popBackStack() },
                                 id = route.id
                             )
                         }
@@ -179,6 +182,7 @@ class MainActivity : ComponentActivity() {
                         composable<Destinations.BoardGame> {
                             val route = it.toRoute<Destinations.BoardGame>()
                             BoardGameScreen(
+                                goBack = { navController.popBackStack() },
                                 id = route.id
                             )
                         }

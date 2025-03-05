@@ -28,18 +28,9 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medialibary.MediaLibraryApplication
+import com.example.medialibary.repositories.MoviesRepository
 import com.example.medialibary.viewmodels.CreateMovieScreenViewModel
-//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
-
-@Composable
-fun createMovieScreenViewModel(movieId: Long?) = viewModel<CreateMovieScreenViewModel>(
-    factory = CreateMovieScreenViewModel.Factory,
-    extras = MutableCreationExtras().apply {
-        this[CreateMovieScreenViewModel.MOVIE_ID_KEY] = movieId
-        this[APPLICATION_KEY] = LocalContext.current.applicationContext as MediaLibraryApplication
-    }
-)
 
 @Composable
 fun CreateMovieScreen(
@@ -116,9 +107,10 @@ fun CreateMovieScreen(
                     // Input validation
                     if (title.isBlank()) {
                         Toast.makeText(context, "Title cannot be empty - please fix the error", Toast.LENGTH_SHORT).show()
-                    } else if (runtime.isNotBlank() && runtime.toIntOrNull() == null) {
+                    } else if (runtime.isBlank() || runtime.toIntOrNull() == null) {
                         Toast.makeText(context, "Runtime has to be a number", Toast.LENGTH_SHORT).show()
-                    } else {
+                    }
+                    else {
                         viewModel.saveMovie(title, genre, rating, runtime.toInt(), format, notes)
                         Toast.makeText(context, "Movie added", Toast.LENGTH_SHORT).show()
                         goBack()

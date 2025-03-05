@@ -16,17 +16,9 @@ import kotlinx.coroutines.launch
 
 
 class CreateMovieScreenViewModel(
-//    private val movieId: Long?,
     private val moviesRepository: MoviesRepository
 ): ViewModel() {
-    //private val _title = MutableStateFlow("")
-    //private val _genre = MutableStateFlow("")
-    //private val _rating = MutableStateFlow("")
-    //private val _runtime = MutableStateFlow(0)  // M4 L4.2
-    //private val _format = MutableStateFlow("")
-    //private val _notes = MutableStateFlow("")
 
-    //val title: MutableStateFlow<String> = _title
     private val _movies = MutableStateFlow(emptyList<Movie>()) // Copilot
     val movies: StateFlow<List<Movie>> = _movies
 

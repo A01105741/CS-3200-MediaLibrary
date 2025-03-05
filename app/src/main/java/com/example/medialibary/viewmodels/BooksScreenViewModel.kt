@@ -22,7 +22,7 @@ class BooksScreenViewModel(
 
     fun loadBooks() {
         viewModelScope.launch {
-            booksRepository.loadbooks()
+            booksRepository.loadBooks()
         }
     }
 
@@ -30,6 +30,7 @@ class BooksScreenViewModel(
         viewModelScope.launch {
             booksRepository.books.collect { books ->
                 _books.value = books
+               // _books.value = books
             }
         }
     }

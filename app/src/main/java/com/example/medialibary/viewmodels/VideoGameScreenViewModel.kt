@@ -11,32 +11,37 @@ import com.example.medialibary.models.VideoGame
 import com.example.medialibary.repositories.VideoGamesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class VideoGameScreenViewModel(
-    videoGamesRepository: VideoGamesRepository,
-    videoGameId: Long
-): ViewModel() {
-    private val _videoGame = MutableStateFlow<VideoGame?>(null)
-    val videoGame: StateFlow<VideoGame?> = _videoGame
+data class VideoGameScreenUIState(
+    val videoGame: VideoGame? = null
+)
 
-    init {
+class VideoGameScreenViewModel(
+    private val videoGameId: Long?,
+    private val videoGamesRepository: VideoGamesRepository
+): ViewModel() {
+    private val _uiVideoGameState = MutableStateFlow(VideoGameScreenUIState())
+    val uiVideoGame: StateFlow<VideoGameScreenUIState> = _uiVideoGameState.asStateFlow()
+
+    fun getVideoGameById(videoGameId: Long) {
         viewModelScope.launch {
-            videoGamesRepository.videoGames.collect { videoGames ->
-                _videoGame.value = videoGames.find { it.id == videoGameId }
-            }
+            val videoGame = videoGamesRepository.getVideoGameById(videoGameId)
+            _uiVideoGameState.update { it.copy(videoGame = videoGame) }
         }
     }
-
+    
     companion object {
-        val VIDEO_GAME_ID_KEY = object: CreationExtras.Key<Long> {}
+        val VIDEOGAME_ID_KEY = object: CreationExtras.Key<Long> {}
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as MediaLibraryApplication
-                val videoGameId = this[VIDEO_GAME_ID_KEY] as Long
+                val videoGameId = this[VIDEOGAME_ID_KEY] as Long
                 VideoGameScreenViewModel(
-                    application.videoGamesRepository,
-                    videoGameId
+                    videoGameId,
+                    application.videoGamesRepository
                 )
             }
         }

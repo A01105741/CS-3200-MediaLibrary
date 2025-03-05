@@ -30,15 +30,6 @@ import com.example.medialibary.MediaLibraryApplication
 import com.example.medialibary.viewmodels.CreateBookScreenViewModel
 
 @Composable
-fun createBookScreenViewModel(bookId: Long?) = viewModel<CreateBookScreenViewModel>(
-    factory = CreateBookScreenViewModel.Factory,
-    extras = MutableCreationExtras().apply {
-        this[CreateBookScreenViewModel.BOOK_ID_KEY] = bookId
-        this[APPLICATION_KEY] = LocalContext.current.applicationContext as MediaLibraryApplication
-    }
-)
-
-@Composable
 fun CreateBookScreen(
     goBack: () -> Unit,
     viewModel: CreateBookScreenViewModel = viewModel(factory = CreateBookScreenViewModel.Factory)
@@ -99,7 +90,7 @@ fun CreateBookScreen(
                     // Input validation
                     if (title.isBlank()) {
                         Toast.makeText(context, "Title cannot be empty - please fix the error", Toast.LENGTH_SHORT).show()
-                    } else if (pages.isNotBlank() && pages.toIntOrNull() == null) {
+                    } else if (pages.isBlank() || pages.toIntOrNull() == null) {
                         Toast.makeText(context, "Pages has to be a number", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.saveBook(
@@ -108,7 +99,7 @@ fun CreateBookScreen(
                         format = format,
                         pages = pages.toInt(),
                         notes = notes
-                    )
+                        )
                         Toast.makeText(context, "Book added", Toast.LENGTH_SHORT).show()
                         goBack()
                     }
